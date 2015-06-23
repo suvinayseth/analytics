@@ -36,27 +36,28 @@ for year in xrange(start_year, effective_datetime.year+1):
         except:
             print "error with subprocess"
             
-
-        month = month.strftime('%m')
+        temp_date = datetime.date(year=year, month=month, day=1)
+        month = temp_date.strftime('%m')
             #defining vm path to access file
-        file_name = "/home/dev/Suvinay/gsutil/installs_com.locon.housing_" + (year) + month + "_overview.csv"
+        file_name = "/home/dev/Suvinay/gsutil/installs_com.locon.housing_" + str(year) + month + "_overview.csv"
         gsutil_file = open(file_name,mode='r')
         gsutil_text = gsutil_file.read().decode('utf-16le')
         gsutil_text = gsutil_text.split('\n')
         for line in gsutil_text[1:]:
-            values = line.split(',')
-        date = int(values[0].replace('-',''))
-        current_device_installs = int(values[2])
-        daily_device_installs = int(values[3])
-        daily_device_uninstalls = int(values[4])
-        daily_device_upgrades = int(values[5])
-        current_user_installs = int(values[6])
-        total_user_installs = int(values[7])
-        daily_user_installs = int(values[8])
-        daily_user_uninstalls = int(values[9])
-        print 'executing sql statement' 
-        psql_cur.execute('INSERT into android_app_data values (%s,%s,%s,%s,%s,%s,%s,%s,%s)'%(date,daily_device_installs,current_device_installs,daily_user_installs,current_user_installs, total_user_installs,daily_device_uninstalls, daily_user_uninstalls,daily_device_upgrades))
-        psql_connect.commit()
+            if line:
+                values = line.split(',')
+                date = int(values[0].replace('-',''))
+                current_device_installs = int(values[2])
+                daily_device_installs = int(values[3])
+                daily_device_uninstalls = int(values[4])
+                daily_device_upgrades = int(values[5])
+                current_user_installs = int(values[6])
+                total_user_installs = int(values[7])
+                daily_user_installs = int(values[8])
+                daily_user_uninstalls = int(values[9])
+                print 'executing sql statement' 
+                psql_cur.execute('INSERT into android_app_data values (%s,%s,%s,%s,%s,%s,%s,%s,%s)'%(date,daily_device_installs,current_device_installs,daily_user_installs,current_user_installs, total_user_installs,daily_device_uninstalls, daily_user_uninstalls,daily_device_upgrades))
+                psql_connect.commit()
 
 
 
